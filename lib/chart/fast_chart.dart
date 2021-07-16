@@ -1,3 +1,4 @@
+import 'package:fast_chart/chart/axis_painter.dart';
 import 'package:fast_chart/chart/chart_series.dart';
 import 'package:fast_chart/chart/column_painter.dart';
 import 'package:fast_chart/chart/column_series.dart';
@@ -38,15 +39,39 @@ class _FastChartState<TData> extends State<FastChart> {
         padding: const EdgeInsets.all(10.0),
         child: Center(
           child: SizedBox.expand(
-            child: CustomPaint(
-              painter: _getSeriesPainter<TData>(
-                series: widget._series as ChartSeries<TData>,
-              ),
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                CustomPaint(
+                  painter: _getAxisPainter<TData>(
+                    series: widget._series as ChartSeries<TData>,
+                  ),
+                ),
+                CustomPaint(
+                  painter: _getSeriesPainter<TData>(
+                    series: widget._series as ChartSeries<TData>,
+                  ),
+                ),
+              ],
             ),
           ),
         ),
       ),
     );
+  }
+
+  CustomPainter? _getAxisPainter<TData>({
+    required ChartSeries<TData> series,
+    AnimationController? animationController,
+  }) {
+    if (series is ColumnSeries<TData>) {
+      return AxisPainter(
+        series: series,
+        animationController: animationController,
+      );
+    }
+
+    return null;
   }
 
   CustomPainter? _getSeriesPainter<TData>({
