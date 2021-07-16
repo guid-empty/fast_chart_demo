@@ -1,4 +1,3 @@
-import 'dart:math' as math;
 import 'dart:ui';
 
 import 'package:fast_chart/chart/chart_series_data_source.dart';
@@ -8,20 +7,17 @@ import 'package:flutter/rendering.dart';
 
 class AxisPainter<TData> extends CustomPainter {
   final AnimationController? animationController;
-  final ColumnSeries<TData> _series;
   final ChartSeriesDataSource<TData> _dataSource;
 
   AxisPainter({
     required ColumnSeries<TData> series,
     this.animationController,
-  })  : _series = series,
-        _dataSource = series.dataSource,
+  })  : _dataSource = series.dataSource,
         super(repaint: animationController);
 
   @override
   void paint(Canvas canvas, Size size) {
     final double margin = 10;
-    final double radius = 4;
 
     final columnWidth = (size.width - (margin * _dataSource.length + margin)) /
         _dataSource.length;
@@ -35,8 +31,6 @@ class AxisPainter<TData> extends CustomPainter {
       ..style = PaintingStyle.stroke;
 
     for (var i = 0; i < _dataSource.length; i++) {
-      final TData data = _dataSource[i];
-
       left += columnWidth + margin;
       final xAxisPosition = left - margin - columnWidth / 2;
 
@@ -57,15 +51,4 @@ class AxisPainter<TData> extends CustomPainter {
 
   @override
   bool shouldRepaint(AxisPainter oldDelegate) => true;
-
-  num _getMaxYAxisValue() {
-    num max = 0;
-    for (var i = 0; i < _dataSource.length; i++) {
-      final data = _dataSource[i];
-      final yAxisValue = _series.yValueMapper(data, i);
-      max = math.max(max, yAxisValue);
-    }
-
-    return max;
-  }
 }
