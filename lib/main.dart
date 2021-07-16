@@ -42,6 +42,8 @@ class _MyHomePageState extends State<MyHomePage> {
       CustomData(dayInMonth: 7, closedPrice: 20, color: Colors.brown),
       CustomData(dayInMonth: 8, closedPrice: 15, color: Colors.yellow),
       CustomData(dayInMonth: 9, closedPrice: 20, color: Colors.amber),
+      CustomData(
+          dayInMonth: 9, closedPrice: 20, color: Colors.deepOrangeAccent),
     ],
   );
 
@@ -52,17 +54,29 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: Center(
-        child: FastChart<CustomData>(
-          series: ColumnSeries<CustomData>(
-            dataSource: _dataSource,
-            xValueMapper: (CustomData data, int index) =>
-                _dataSource[index].dayInMonth,
-            yValueMapper: (CustomData data, int index) =>
-                _dataSource[index].closedPrice,
-            pointColorMapper: (CustomData data, int index) =>
-                _dataSource[index].color,
-          ),
-          backgroundColor: Colors.black87,
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            FastChart<CustomData>(
+              series: ColumnSeries<CustomData>(
+                dataSource: _dataSource,
+                xValueMapper: (CustomData data, int index) =>
+                    _dataSource[index].dayInMonth,
+                yValueMapper: (CustomData data, int index) =>
+                    _dataSource[index].closedPrice,
+                pointColorMapper: (CustomData data, int index) =>
+                    _dataSource[index].color,
+              ),
+              backgroundColor: Colors.black87,
+            ),
+            Positioned(
+              bottom: 10,
+              left: 0,
+              right: 0,
+              height: 160,
+              child: PerformanceOverlay.allEnabled(),
+            ),
+          ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
