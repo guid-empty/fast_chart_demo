@@ -25,8 +25,20 @@ class ColumnsPainter<TData> extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final double margin = 10;
-    final double radius = 4;
+    late double margin;
+    late double radius;
+
+    final maxAvailableColumnWidth = size.width / _dataSource.length;
+    if (maxAvailableColumnWidth < 8 && maxAvailableColumnWidth >= 2) {
+      margin = 1;
+      radius = 1;
+    } else if (maxAvailableColumnWidth < 2) {
+      margin = 0;
+      radius = 0;
+    } else {
+      margin = 10;
+      radius = 4;
+    }
 
     final columnWidth = (size.width - (margin * _dataSource.length + margin)) /
         _dataSource.length;

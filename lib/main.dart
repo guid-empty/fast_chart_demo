@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:fast_chart/chart/chart_series_data_source.dart';
 import 'package:fast_chart/chart/column_series.dart';
 import 'package:fast_chart/chart/fast_chart.dart';
@@ -43,9 +45,11 @@ class _MyHomePageState extends State<MyHomePage> {
       CustomData(dayInMonth: 8, closedPrice: 15, color: Colors.yellow),
       CustomData(dayInMonth: 9, closedPrice: 20, color: Colors.amber),
       CustomData(
-          dayInMonth: 9, closedPrice: 20, color: Colors.deepOrangeAccent),
+          dayInMonth: 10, closedPrice: 50, color: Colors.deepOrangeAccent),
     ],
   );
+
+  late ValueNotifier<int> _total = ValueNotifier<int>(_dataSource.length);
 
   @override
   Widget build(BuildContext context) {
@@ -70,6 +74,29 @@ class _MyHomePageState extends State<MyHomePage> {
               backgroundColor: Colors.black87,
             ),
             Positioned(
+              top: 10,
+              left: 0,
+              right: 0,
+              height: 20,
+              child: Container(
+                padding: const EdgeInsets.only(left: 10),
+                color: Colors.black.withAlpha(90),
+                constraints: BoxConstraints(
+                  maxWidth: double.infinity,
+                  minWidth: double.infinity,
+                  minHeight: 20,
+                ),
+                height: 20,
+                child: ValueListenableBuilder(
+                  builder: (context, total, widget) => Text(
+                    'total: ${_total.value}',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  valueListenable: _total,
+                ),
+              ),
+            ),
+            Positioned(
               bottom: 10,
               left: 0,
               right: 0,
@@ -79,11 +106,49 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          FloatingActionButton(
+            onPressed: () => _add100(),
+            tooltip: 'Increment',
+            child: Icon(Icons.add),
+          ),
+          SizedBox(height: 10),
+          FloatingActionButton(
+            onPressed: () => setState(() {}),
+            child: Icon(Icons.refresh_outlined),
+          ),
+        ],
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
+  }
+
+  void _add100() {
+    setState(() {
+      int dayInMonth = 11;
+      for (int i = 0; i < 100; i++) {
+        final closedPrice = math.Random().nextInt(60);
+        final a = math.Random().nextInt(255);
+        final r = math.Random().nextInt(255);
+        final g = math.Random().nextInt(255);
+        final b = math.Random().nextInt(255);
+
+        _dataSource.add(
+          CustomData(
+            dayInMonth: dayInMonth,
+            closedPrice: closedPrice,
+            color: Color.fromARGB(a, r, g, b),
+          ),
+        );
+
+        dayInMonth++;
+        if (dayInMonth > 30) {
+          dayInMonth = 1;
+        }
+      }
+
+      _total.value = _dataSource.length;
+    });
   }
 }

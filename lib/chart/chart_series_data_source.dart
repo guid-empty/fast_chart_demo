@@ -28,6 +28,10 @@ class ChartSeriesDataSource<T> implements Iterable<T> {
 
   void operator []=(int index, T value) => _initial[index] = value;
 
+  void add(T element) {
+    _initial.add(element);
+  }
+
   @override
   bool any(bool Function(T) test) {
     return _initial.any(test);
