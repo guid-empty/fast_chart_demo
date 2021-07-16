@@ -24,12 +24,51 @@ class FastChart<TData> extends StatefulWidget {
   _FastChartState<TData> createState() => _FastChartState<TData>();
 }
 
-class _FastChartState<TData> extends State<FastChart> {
+class _FastChartState<TData> extends State<FastChart>
+    with SingleTickerProviderStateMixin {
+  AnimationController? _seriesAnimationController;
+
+  Animation<double>? _seriesAnimation;
+
   @override
   Widget build(BuildContext context) {
     return Center(
       child: renderChartElements(context),
     );
+  }
+
+  @override
+  void didUpdateWidget(FastChart<TData> oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (widget._series != oldWidget._series) {
+      if (widget._series.animationDuration != null) {
+        _seriesAnimationController!
+          ..reset()
+          ..forward();
+      }
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget._series.animationDuration != null) {
+      _seriesAnimationController = AnimationController(
+        vsync: this,
+        duration: widget._series.animationDuration,
+      );
+
+      _seriesAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+        CurvedAnimation(
+          parent: _seriesAnimationController!,
+          curve: Curves.easeInOut,
+        ),
+      );
+
+      _seriesAnimationController!.forward();
+    }
   }
 
   Widget renderChartElements(BuildContext context) {
@@ -45,11 +84,13 @@ class _FastChartState<TData> extends State<FastChart> {
                 CustomPaint(
                   painter: _getAxisPainter<TData>(
                     series: widget._series as ChartSeries<TData>,
+                    animation: _seriesAnimation,
                   ),
                 ),
                 CustomPaint(
                   painter: _getSeriesPainter<TData>(
                     series: widget._series as ChartSeries<TData>,
+                    animation: _seriesAnimation,
                   ),
                 ),
               ],
@@ -62,12 +103,12 @@ class _FastChartState<TData> extends State<FastChart> {
 
   CustomPainter? _getAxisPainter<TData>({
     required ChartSeries<TData> series,
-    AnimationController? animationController,
+    Animation<double>? animation,
   }) {
     if (series is ColumnSeries<TData>) {
       return AxisPainter(
         series: series,
-        animationController: animationController,
+        animation: animation,
       );
     }
 
@@ -76,12 +117,12 @@ class _FastChartState<TData> extends State<FastChart> {
 
   CustomPainter? _getSeriesPainter<TData>({
     required ChartSeries<TData> series,
-    AnimationController? animationController,
+    Animation<double>? animation,
   }) {
     if (series is ColumnSeries<TData>) {
       return ColumnsPainter(
         series: series,
-        animationController: animationController,
+        animation: animation,
       );
     }
 

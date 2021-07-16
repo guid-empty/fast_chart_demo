@@ -13,8 +13,8 @@ class ColumnSeries<TData> extends ChartSeries<TData> {
     required this.xValueMapper,
     required this.yValueMapper,
     required this.pointColorMapper,
+    Duration? animationDuration,
     String? name,
-    double? animationDuration,
     Color? borderColor,
     double? borderWidth,
   }) : super(

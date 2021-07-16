@@ -7,24 +7,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
 class ColumnsPainter<TData> extends CustomPainter {
-  final AnimationController? animationController;
+  final Animation<double>? animation;
   final ColumnSeries<TData> _series;
   final ChartSeriesDataSource<TData> _dataSource;
   final ColumnSeriesCalculationService<TData> _columnSeriesCalculationService;
 
   ColumnsPainter({
     required ColumnSeries<TData> series,
-    this.animationController,
+    this.animation,
   })  : _series = series,
         _dataSource = series.dataSource,
         _columnSeriesCalculationService = ColumnSeriesCalculationService(
           series: series,
           dataSource: series.dataSource,
         ),
-        super(repaint: animationController);
+        super(repaint: animation);
 
   @override
   void paint(Canvas canvas, Size size) {
+    final animationFactor = animation != null ? animation!.value : 1;
     late double margin;
     late double radius;
 
@@ -51,9 +52,14 @@ class ColumnsPainter<TData> extends CustomPainter {
         ..color = _series.pointColorMapper(data, i)
         ..style = PaintingStyle.fill;
 
+      ///
+      /// todo: fix here
+      ///
       final yAxisMaxValue = _columnSeriesCalculationService.getMaxYAxisValue();
       final yAxisValue = _series.yValueMapper(data, i);
-      final columnHeight = (yAxisValue / yAxisMaxValue) * size.height - margin;
+      final columnHeight =
+          ((yAxisValue / yAxisMaxValue) * size.height - margin) *
+              animationFactor;
 
       final columnRRect = RRect.fromRectAndCorners(
         Rect.fromLTWH(

@@ -63,6 +63,7 @@ class _MyHomePageState extends State<MyHomePage> {
           children: [
             FastChart<CustomData>(
               series: ColumnSeries<CustomData>(
+                animationDuration: Duration(milliseconds: 500),
                 dataSource: _dataSource,
                 xValueMapper: (CustomData data, int index) =>
                     _dataSource[index].dayInMonth,

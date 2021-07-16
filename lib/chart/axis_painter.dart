@@ -6,14 +6,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
 class AxisPainter<TData> extends CustomPainter {
-  final AnimationController? animationController;
+  final Animation<double>? animation;
   final ChartSeriesDataSource<TData> _dataSource;
 
   AxisPainter({
     required ColumnSeries<TData> series,
-    this.animationController,
+    this.animation,
   })  : _dataSource = series.dataSource,
-        super(repaint: animationController);
+        super(repaint: animation);
 
   @override
   void paint(Canvas canvas, Size size) {

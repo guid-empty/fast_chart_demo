@@ -11,16 +11,16 @@ abstract class ChartSeries<TData> {
   final ValueMapper<TData, Color> pointColorMapper;
 
   final String? name;
-  final double? animationDuration;
   final Color? borderColor;
   final double? borderWidth;
+  final Duration? animationDuration;
 
   const ChartSeries({
     required this.xValueMapper,
     required this.yValueMapper,
     required this.pointColorMapper,
-    this.name,
     this.animationDuration,
+    this.name,
     this.borderColor,
     this.borderWidth,
   });
