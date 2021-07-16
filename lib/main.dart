@@ -111,6 +111,12 @@ class _MyHomePageState extends State<MyHomePage> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           FloatingActionButton(
+            onPressed: () => _update5(),
+            tooltip: 'Update',
+            child: Icon(Icons.update_outlined),
+          ),
+          SizedBox(height: 10),
+          FloatingActionButton(
             onPressed: () => _add100(),
             tooltip: 'Increment',
             child: Icon(Icons.add),
@@ -151,5 +157,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
       _total.value = _dataSource.length;
     });
+  }
+
+  void _update5() {
+    _dataSource[4] =
+        CustomData(dayInMonth: 3, closedPrice: 10, color: Colors.lightBlue);
   }
 }

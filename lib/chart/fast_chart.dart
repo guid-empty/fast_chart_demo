@@ -58,7 +58,9 @@ class _FastChartState<TData> extends State<FastChart>
       _seriesAnimationController = AnimationController(
         vsync: this,
         duration: widget._series.animationDuration,
-      );
+      )..addListener(() {
+          print(_seriesAnimationController!.value);
+        });
 
       _seriesAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
         CurvedAnimation(
@@ -81,16 +83,26 @@ class _FastChartState<TData> extends State<FastChart>
             child: Stack(
               fit: StackFit.expand,
               children: [
-                CustomPaint(
-                  painter: _getAxisPainter<TData>(
-                    series: widget._series as ChartSeries<TData>,
-                    animation: _seriesAnimation,
+                ///
+                /// TODO: try to remove RepaintBoundary and Tap on Update button twise
+                ///
+                RepaintBoundary(
+                  child: CustomPaint(
+                    painter: _getAxisPainter<TData>(
+                      series: widget._series as ChartSeries<TData>,
+                      animation: _seriesAnimation,
+                    ),
                   ),
                 ),
-                CustomPaint(
-                  painter: _getSeriesPainter<TData>(
-                    series: widget._series as ChartSeries<TData>,
-                    animation: _seriesAnimation,
+                ///
+                /// TODO: try to remove RepaintBoundary and Tap on Update button twise
+                ///
+                RepaintBoundary(
+                  child: CustomPaint(
+                    painter: _getSeriesPainter<TData>(
+                      series: widget._series as ChartSeries<TData>,
+                      animation: _seriesAnimation,
+                    ),
                   ),
                 ),
               ],
