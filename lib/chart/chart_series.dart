@@ -1,3 +1,4 @@
+import 'package:fast_chart/chart/chart_series_data_source.dart';
 import 'package:flutter/material.dart';
 
 typedef ValueMapper<TChartPointData, TAxisValue> = TAxisValue Function(
@@ -6,6 +7,7 @@ typedef ValueMapper<TChartPointData, TAxisValue> = TAxisValue Function(
 );
 
 abstract class ChartSeries<TData> {
+  final ChartSeriesDataSource<TData> dataSource;
   final ValueMapper<TData, dynamic> xValueMapper;
   final ValueMapper<TData, num> yValueMapper;
   final ValueMapper<TData, Color> pointColorMapper;
@@ -16,6 +18,7 @@ abstract class ChartSeries<TData> {
   final Duration? animationDuration;
 
   const ChartSeries({
+    required this.dataSource,
     required this.xValueMapper,
     required this.yValueMapper,
     required this.pointColorMapper,

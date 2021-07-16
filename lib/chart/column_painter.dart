@@ -21,7 +21,14 @@ class ColumnsPainter<TData> extends CustomPainter {
           series: series,
           dataSource: series.dataSource,
         ),
-        super(repaint: animation);
+        super(
+          repaint: Listenable.merge(
+            [
+              animation,
+              series.dataSource,
+            ],
+          ),
+        );
 
   @override
   void paint(Canvas canvas, Size size) {

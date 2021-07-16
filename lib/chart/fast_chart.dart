@@ -70,6 +70,15 @@ class _FastChartState<TData> extends State<FastChart>
       );
 
       _seriesAnimationController!.forward();
+
+      ///
+      /// todo: start anumation
+      ///
+      // widget._series.dataSource.onUpdated.listen((event) {
+      //   _seriesAnimationController!
+      //     ..reset()
+      //     ..forward();
+      // });
     }
   }
 
@@ -94,6 +103,7 @@ class _FastChartState<TData> extends State<FastChart>
                     ),
                   ),
                 ),
+
                 ///
                 /// TODO: try to remove RepaintBoundary and Tap on Update button twise
                 ///

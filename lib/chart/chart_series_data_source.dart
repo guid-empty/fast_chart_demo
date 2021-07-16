@@ -1,5 +1,14 @@
-class ChartSeriesDataSource<T> implements Iterable<T> {
+import 'dart:async';
+
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
+
+class ChartSeriesDataSource<T> extends Listenable implements Iterable<T> {
+  StreamController<void> _updateController = StreamController<void>.broadcast();
+
   final List<T> _initial;
+
+  final ObserverList<VoidCallback> _listeners = ObserverList<VoidCallback>();
 
   ChartSeriesDataSource(this._initial);
 
@@ -21,19 +30,29 @@ class ChartSeriesDataSource<T> implements Iterable<T> {
   @override
   int get length => _initial.length;
 
+  Stream<void> get onUpdated => _updateController.stream;
+
   @override
   get single => _initial.single;
 
   T operator [](int index) => _initial[index];
 
-
   ///
   /// Update!!! TODO:
   ///
-  void operator []=(int index, T value) => _initial[index] = value;
+  void operator []=(int index, T value) {
+    _initial[index] = value;
+    _updateController.add(null);
+    _listeners.forEach((listener) => listener());
+  }
 
   void add(T element) {
     _initial.add(element);
+  }
+
+  @override
+  void addListener(VoidCallback listener) {
+    _listeners.add(listener);
   }
 
   @override
@@ -49,6 +68,10 @@ class ChartSeriesDataSource<T> implements Iterable<T> {
   @override
   bool contains(Object? element) {
     return _initial.contains(element);
+  }
+
+  void dispose() {
+    _updateController.close();
   }
 
   @override
@@ -105,6 +128,11 @@ class ChartSeriesDataSource<T> implements Iterable<T> {
   @override
   T reduce(T Function(T value, T element) combine) {
     return _initial.reduce(combine);
+  }
+
+  @override
+  void removeListener(VoidCallback listener) {
+    _listeners.remove(listener);
   }
 
   @override
