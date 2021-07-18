@@ -58,9 +58,11 @@ class _FastChartState<TData> extends State<FastChart>
       _seriesAnimationController = AnimationController(
         vsync: this,
         duration: widget._series.animationDuration,
-      )..addListener(() {
-          print(_seriesAnimationController!.value);
-        });
+      );
+
+      // ..addListener(() {
+      //   print(_seriesAnimationController!.value);
+      // });
 
       _seriesAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
         CurvedAnimation(
@@ -72,7 +74,7 @@ class _FastChartState<TData> extends State<FastChart>
       _seriesAnimationController!.forward();
 
       ///
-      /// todo: start anumation
+      /// todo: start animation
       ///
       // widget._series.dataSource.onUpdated.listen((event) {
       //   _seriesAnimationController!
@@ -109,6 +111,7 @@ class _FastChartState<TData> extends State<FastChart>
                 ///
                 RepaintBoundary(
                   child: CustomPaint(
+                    isComplex: true,
                     painter: _getSeriesPainter<TData>(
                       series: widget._series as ChartSeries<TData>,
                       animation: _seriesAnimation,

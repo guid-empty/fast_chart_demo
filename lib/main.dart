@@ -135,18 +135,8 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       int dayInMonth = 11;
       for (int i = 0; i < 100; i++) {
-        final closedPrice = math.Random().nextInt(60);
-        final a = math.Random().nextInt(255);
-        final r = math.Random().nextInt(255);
-        final g = math.Random().nextInt(255);
-        final b = math.Random().nextInt(255);
-
         _dataSource.add(
-          CustomData(
-            dayInMonth: dayInMonth,
-            closedPrice: closedPrice,
-            color: Color.fromARGB(a, r, g, b),
-          ),
+          _generateCustomData(dayInMonth, 60),
         );
 
         dayInMonth++;
@@ -159,8 +149,21 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  CustomData _generateCustomData(int dayInMonth, int maxClosedPrice) {
+    final closedPrice = math.Random().nextInt(maxClosedPrice);
+    final a = math.Random().nextInt(255);
+    final r = math.Random().nextInt(255);
+    final g = math.Random().nextInt(255);
+    final b = math.Random().nextInt(255);
+
+    return CustomData(
+      dayInMonth: dayInMonth,
+      closedPrice: closedPrice,
+      color: Color.fromARGB(a, r, g, b),
+    );
+  }
+
   void _update5() {
-    _dataSource[4] =
-        CustomData(dayInMonth: 3, closedPrice: 10, color: Colors.lightBlue);
+    _dataSource[4] = _generateCustomData(3, 50);
   }
 }
