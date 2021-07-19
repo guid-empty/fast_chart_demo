@@ -3,15 +3,12 @@ import 'package:fast_chart/chart/chart_series_data_source.dart';
 import 'package:flutter/material.dart';
 
 class ColumnSeries<TData> extends ChartSeries<TData> {
-  final ValueMapper<TData, dynamic> xValueMapper;
-  final ValueMapper<TData, num> yValueMapper;
-  final ValueMapper<TData, Color> pointColorMapper;
-
   ColumnSeries({
     required ChartSeriesDataSource<TData> dataSource,
-    required this.xValueMapper,
-    required this.yValueMapper,
-    required this.pointColorMapper,
+    required ValueMapper<TData, dynamic> xValueMapper,
+    required ValueMapper<TData, num> yValueMapper,
+    required ValueMapper<TData, bool> isDirtyMapper,
+    required ValueMapper<TData, Color> pointColorMapper,
     Duration? animationDuration,
     String? name,
     Color? borderColor,
@@ -20,6 +17,7 @@ class ColumnSeries<TData> extends ChartSeries<TData> {
           dataSource: dataSource,
           xValueMapper: xValueMapper,
           yValueMapper: yValueMapper,
+          isDirtyMapper: isDirtyMapper,
           pointColorMapper: pointColorMapper,
           name: name,
           animationDuration: animationDuration,

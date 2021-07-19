@@ -6,15 +6,13 @@ import 'package:fast_chart/chart/column_series_calculation_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
-class ColumnsPainter<TData> extends CustomPainter {
-  final Animation<double>? animation;
+class UpdatedColumnsPainter<TData> extends CustomPainter {
   final ColumnSeries<TData> _series;
   final ChartSeriesDataSource<TData> _dataSource;
   final ColumnSeriesCalculationService<TData> _columnSeriesCalculationService;
 
-  ColumnsPainter({
+  UpdatedColumnsPainter({
     required ColumnSeries<TData> series,
-    this.animation,
   })  : _series = series,
         _dataSource = series.dataSource,
         _columnSeriesCalculationService = ColumnSeriesCalculationService(
@@ -24,14 +22,14 @@ class ColumnsPainter<TData> extends CustomPainter {
         super(
           repaint: Listenable.merge(
             [
-              animation,
+              series.dataSource,
             ],
           ),
         );
 
   @override
   void paint(Canvas canvas, Size size) {
-    final animationFactor = animation != null ? animation!.value : 1;
+    final animationFactor = 1;
     late double margin;
     late double radius;
 
@@ -51,14 +49,11 @@ class ColumnsPainter<TData> extends CustomPainter {
         _dataSource.length;
     double left = margin;
 
-    ///
-    /// todo: fix here
-    ///
     final yAxisMaxValue = _columnSeriesCalculationService.getMaxYAxisValue();
-
     for (var i = 0; i < _dataSource.length; i++) {
       final TData data = _dataSource[i];
-      if (!_series.isDirtyMapper(data, i)) {
+
+      if (_series.isDirtyMapper(data, i)) {
         Paint columnFillPaint = Paint()
           ..color = _series.pointColorMapper(data, i)
           ..style = PaintingStyle.fill;
@@ -76,13 +71,13 @@ class ColumnsPainter<TData> extends CustomPainter {
           topLeft: Radius.circular(radius),
           topRight: Radius.circular(radius),
         );
+
         canvas.drawRRect(columnRRect, columnFillPaint);
       }
-
       left += columnWidth + margin;
     }
   }
 
   @override
-  bool shouldRepaint(ColumnsPainter oldDelegate) => false;
+  bool shouldRepaint(UpdatedColumnsPainter oldDelegate) => true;
 }

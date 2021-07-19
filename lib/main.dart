@@ -5,8 +5,11 @@ import 'package:fast_chart/chart/column_series.dart';
 import 'package:fast_chart/chart/fast_chart.dart';
 import 'package:fast_chart/custom_data.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 void main() {
+  debugProfilePaintsEnabled = true;
+  debugProfileBuildsEnabled = true;
   runApp(MyApp());
 }
 
@@ -51,6 +54,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   late ValueNotifier<int> _total = ValueNotifier<int>(_dataSource.length);
 
+  Set<int> _updatedItemsCache = <int>{};
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -71,6 +76,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     _dataSource[index].closedPrice,
                 pointColorMapper: (CustomData data, int index) =>
                     _dataSource[index].color,
+                isDirtyMapper: (CustomData data, index) =>
+                    _updatedItemsCache.contains(index),
               ),
               backgroundColor: Colors.black87,
             ),
@@ -110,6 +117,7 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
+          SizedBox(height: 10),
           FloatingActionButton(
             onPressed: () => _update5(),
             tooltip: 'Update',
@@ -151,7 +159,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   CustomData _generateCustomData(int dayInMonth, int maxClosedPrice) {
     final closedPrice = math.Random().nextInt(maxClosedPrice);
-    final a = math.Random().nextInt(255);
+    final a = 255 - math.Random().nextInt(30);
     final r = math.Random().nextInt(255);
     final g = math.Random().nextInt(255);
     final b = math.Random().nextInt(255);
@@ -164,6 +172,14 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _update5() {
-    _dataSource[4] = _generateCustomData(3, 50);
+    var updatedIndex = 4;
+
+    _updatedItemsCache.add(updatedIndex);
+    _dataSource[updatedIndex] = _generateCustomData(updatedIndex, 50);
+
+    updatedIndex = 8;
+
+    _updatedItemsCache.add(updatedIndex);
+    _dataSource[updatedIndex] = _generateCustomData(updatedIndex, 50);
   }
 }

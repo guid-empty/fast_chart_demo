@@ -17,6 +17,7 @@ class AxisPainter<TData> extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    canvas.drawColor(Colors.black87, BlendMode.src);
     final double margin = 10;
 
     final columnWidth = (size.width - (margin * _dataSource.length + margin)) /

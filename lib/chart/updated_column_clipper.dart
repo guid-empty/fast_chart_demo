@@ -6,15 +6,13 @@ import 'package:fast_chart/chart/column_series_calculation_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
-class ColumnsPainter<TData> extends CustomPainter {
-  final Animation<double>? animation;
+class UpdatedColumnsClipper<TData> extends CustomClipper<Path> {
   final ColumnSeries<TData> _series;
   final ChartSeriesDataSource<TData> _dataSource;
   final ColumnSeriesCalculationService<TData> _columnSeriesCalculationService;
 
-  ColumnsPainter({
+  UpdatedColumnsClipper({
     required ColumnSeries<TData> series,
-    this.animation,
   })  : _series = series,
         _dataSource = series.dataSource,
         _columnSeriesCalculationService = ColumnSeriesCalculationService(
@@ -22,16 +20,18 @@ class ColumnsPainter<TData> extends CustomPainter {
           dataSource: series.dataSource,
         ),
         super(
-          repaint: Listenable.merge(
+          reclip: Listenable.merge(
             [
-              animation,
+              series.dataSource,
             ],
           ),
         );
 
   @override
-  void paint(Canvas canvas, Size size) {
-    final animationFactor = animation != null ? animation!.value : 1;
+  Path getClip(Size size) {
+    final Path resultPath = Path();
+
+    final animationFactor = 1;
     late double margin;
     late double radius;
 
@@ -51,38 +51,32 @@ class ColumnsPainter<TData> extends CustomPainter {
         _dataSource.length;
     double left = margin;
 
-    ///
-    /// todo: fix here
-    ///
     final yAxisMaxValue = _columnSeriesCalculationService.getMaxYAxisValue();
-
     for (var i = 0; i < _dataSource.length; i++) {
       final TData data = _dataSource[i];
-      if (!_series.isDirtyMapper(data, i)) {
-        Paint columnFillPaint = Paint()
-          ..color = _series.pointColorMapper(data, i)
-          ..style = PaintingStyle.fill;
 
+      if (_series.isDirtyMapper(data, i)) {
         final yAxisValue = _series.yValueMapper(data, i);
         final columnHeight =
             ((yAxisValue / yAxisMaxValue) * size.height - margin) *
                 animationFactor;
 
         final columnRRect = RRect.fromRectAndCorners(
-          Rect.fromLTWH(
-              left, size.height - columnHeight, columnWidth, columnHeight),
+          Rect.fromLTWH(left, 0, columnWidth, size.height),
           bottomLeft: Radius.zero,
           bottomRight: Radius.zero,
           topLeft: Radius.circular(radius),
           topRight: Radius.circular(radius),
         );
-        canvas.drawRRect(columnRRect, columnFillPaint);
-      }
 
+        resultPath.addRRect(columnRRect);
+      }
       left += columnWidth + margin;
     }
+
+    return resultPath;
   }
 
   @override
-  bool shouldRepaint(ColumnsPainter oldDelegate) => false;
+  bool shouldReclip(covariant CustomClipper oldClipper) => true;
 }

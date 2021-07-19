@@ -2,6 +2,8 @@ import 'package:fast_chart/chart/axis_painter.dart';
 import 'package:fast_chart/chart/chart_series.dart';
 import 'package:fast_chart/chart/column_painter.dart';
 import 'package:fast_chart/chart/column_series.dart';
+import 'package:fast_chart/chart/updated_column_clipper.dart';
+import 'package:fast_chart/chart/updated_column_painter.dart';
 import 'package:flutter/material.dart';
 
 class FastChart<TData> extends StatefulWidget {
@@ -26,6 +28,12 @@ class FastChart<TData> extends StatefulWidget {
 
 class _FastChartState<TData> extends State<FastChart>
     with SingleTickerProviderStateMixin {
+  static GlobalKey _columnsPainterGlobalKey =
+      GlobalKey(debugLabel: 'columns painter');
+
+  static GlobalKey _columnsUpdatedColumnsPainterGlobalKey =
+      GlobalKey(debugLabel: 'updated columns painter');
+
   AnimationController? _seriesAnimationController;
 
   Animation<double>? _seriesAnimation;
@@ -99,6 +107,7 @@ class _FastChartState<TData> extends State<FastChart>
                 ///
                 RepaintBoundary(
                   child: CustomPaint(
+                    isComplex: true,
                     painter: _getAxisPainter<TData>(
                       series: widget._series as ChartSeries<TData>,
                       animation: _seriesAnimation,
@@ -111,10 +120,30 @@ class _FastChartState<TData> extends State<FastChart>
                 ///
                 RepaintBoundary(
                   child: CustomPaint(
+                    key: _columnsPainterGlobalKey,
                     isComplex: true,
                     painter: _getSeriesPainter<TData>(
                       series: widget._series as ChartSeries<TData>,
                       animation: _seriesAnimation,
+                    ),
+                  ),
+                ),
+
+                RepaintBoundary(
+                  child: ClipPath(
+                    clipper: UpdatedColumnsClipper<TData>(
+                      series: widget._series as ColumnSeries<TData>,
+                    ),
+                    child: CustomPaint(
+                      key: _columnsUpdatedColumnsPainterGlobalKey,
+                      isComplex: true,
+                      painter: _getAxisPainter<TData>(
+                        series: widget._series as ChartSeries<TData>,
+                        animation: _seriesAnimation,
+                      ),
+                      foregroundPainter: _getUpdatedSeriesPainter<TData>(
+                        series: widget._series as ChartSeries<TData>,
+                      ),
                     ),
                   ),
                 ),
@@ -148,6 +177,18 @@ class _FastChartState<TData> extends State<FastChart>
       return ColumnsPainter(
         series: series,
         animation: animation,
+      );
+    }
+
+    return null;
+  }
+
+  CustomPainter? _getUpdatedSeriesPainter<TData>({
+    required ChartSeries<TData> series,
+  }) {
+    if (series is ColumnSeries<TData>) {
+      return UpdatedColumnsPainter(
+        series: series,
       );
     }
 
