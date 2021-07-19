@@ -51,16 +51,10 @@ class UpdatedColumnsClipper<TData> extends CustomClipper<Path> {
         _dataSource.length;
     double left = margin;
 
-    final yAxisMaxValue = _columnSeriesCalculationService.getMaxYAxisValue();
     for (var i = 0; i < _dataSource.length; i++) {
       final TData data = _dataSource[i];
 
       if (_series.isDirtyMapper(data, i)) {
-        final yAxisValue = _series.yValueMapper(data, i);
-        final columnHeight =
-            ((yAxisValue / yAxisMaxValue) * size.height - margin) *
-                animationFactor;
-
         final columnRRect = RRect.fromRectAndCorners(
           Rect.fromLTWH(left, 0, columnWidth, size.height),
           bottomLeft: Radius.zero,

@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: MyHomePage(title: 'Flutter Fast Chart Demo'),
     );
   }
 }
@@ -60,9 +60,11 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.blueAccent,
         title: Text(widget.title),
+        elevation: 0,
       ),
-      body: Center(
+      body: Container(
         child: Stack(
           fit: StackFit.expand,
           children: [
@@ -79,12 +81,12 @@ class _MyHomePageState extends State<MyHomePage> {
                 isDirtyMapper: (CustomData data, index) =>
                     _updatedItemsCache.contains(index),
               ),
-              backgroundColor: Colors.black87,
+              backgroundColor: Colors.blueAccent,
             ),
             Positioned(
-              top: 10,
-              left: 0,
-              right: 0,
+              top: 0,
+              left: 4,
+              right: 4,
               height: 20,
               child: Container(
                 padding: const EdgeInsets.only(left: 10),
@@ -105,7 +107,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
             Positioned(
-              bottom: 10,
+              bottom: 32,
               left: 0,
               right: 0,
               height: 160,

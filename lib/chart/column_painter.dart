@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'dart:ui' as ui;
 
 import 'package:fast_chart/chart/chart_series_data_source.dart';
 import 'package:fast_chart/chart/column_series.dart';
@@ -11,16 +12,19 @@ class ColumnsPainter<TData> extends CustomPainter {
   final ColumnSeries<TData> _series;
   final ChartSeriesDataSource<TData> _dataSource;
   final ColumnSeriesCalculationService<TData> _columnSeriesCalculationService;
+  final ui.Picture? _axisBackgroundPicture;
 
   ColumnsPainter({
     required ColumnSeries<TData> series,
     this.animation,
+    ui.Picture? axisBackgroundPicture,
   })  : _series = series,
         _dataSource = series.dataSource,
         _columnSeriesCalculationService = ColumnSeriesCalculationService(
           series: series,
           dataSource: series.dataSource,
         ),
+        _axisBackgroundPicture = axisBackgroundPicture,
         super(
           repaint: Listenable.merge(
             [
@@ -31,6 +35,12 @@ class ColumnsPainter<TData> extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    if (_axisBackgroundPicture == null) {
+      return;
+    }
+
+    canvas.drawPicture(_axisBackgroundPicture!);
+
     final animationFactor = animation != null ? animation!.value : 1;
     late double margin;
     late double radius;

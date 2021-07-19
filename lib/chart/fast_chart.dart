@@ -1,8 +1,9 @@
+import 'dart:ui' as ui;
+
 import 'package:fast_chart/chart/axis_painter.dart';
 import 'package:fast_chart/chart/chart_series.dart';
 import 'package:fast_chart/chart/column_painter.dart';
 import 'package:fast_chart/chart/column_series.dart';
-import 'package:fast_chart/chart/updated_column_clipper.dart';
 import 'package:fast_chart/chart/updated_column_painter.dart';
 import 'package:flutter/material.dart';
 
@@ -28,22 +29,16 @@ class FastChart<TData> extends StatefulWidget {
 
 class _FastChartState<TData> extends State<FastChart>
     with SingleTickerProviderStateMixin {
-  static GlobalKey _columnsPainterGlobalKey =
-      GlobalKey(debugLabel: 'columns painter');
-
-  static GlobalKey _columnsUpdatedColumnsPainterGlobalKey =
-      GlobalKey(debugLabel: 'updated columns painter');
-
   AnimationController? _seriesAnimationController;
 
   Animation<double>? _seriesAnimation;
 
+  ui.Picture? axisBackgroundPicture;
+
+  CustomPainter? axisPainter;
+
   @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: renderChartElements(context),
-    );
-  }
+  Widget build(BuildContext context) => renderChartElements(context);
 
   @override
   void didUpdateWidget(FastChart<TData> oldWidget) {
@@ -67,11 +62,6 @@ class _FastChartState<TData> extends State<FastChart>
         vsync: this,
         duration: widget._series.animationDuration,
       );
-
-      // ..addListener(() {
-      //   print(_seriesAnimationController!.value);
-      // });
-
       _seriesAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
         CurvedAnimation(
           parent: _seriesAnimationController!,
@@ -93,62 +83,45 @@ class _FastChartState<TData> extends State<FastChart>
   }
 
   Widget renderChartElements(BuildContext context) {
+    final currentAxisPainter = _getAxisPainter<TData>(
+      series: widget._series as ChartSeries<TData>,
+      animation: _seriesAnimation,
+    );
+
     return Container(
       color: widget.backgroundColor,
       child: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: Center(
-          child: SizedBox.expand(
-            child: Stack(
-              fit: StackFit.expand,
-              children: [
-                ///
-                /// TODO: try to remove RepaintBoundary and Tap on Update button twise
-                ///
-                RepaintBoundary(
-                  child: CustomPaint(
-                    isComplex: true,
-                    painter: _getAxisPainter<TData>(
-                      series: widget._series as ChartSeries<TData>,
-                      animation: _seriesAnimation,
-                    ),
-                  ),
-                ),
+        padding: const EdgeInsets.only(left: 4.0, right: 4.0, bottom: 32),
+        child: SizedBox.expand(
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              LayoutBuilder(
+                builder: (BuildContext context, BoxConstraints constraints) {
+                  axisPainter = currentAxisPainter;
+                  final size =
+                      Size(constraints.maxWidth, constraints.maxHeight);
+                  var recorder = ui.PictureRecorder();
+                  var canvas = Canvas(
+                    recorder,
+                    Rect.fromLTWH(0, 0, size.width, size.height),
+                  );
+                  currentAxisPainter?.paint(canvas, size);
+                  axisBackgroundPicture = recorder.endRecording();
 
-                ///
-                /// TODO: try to remove RepaintBoundary and Tap on Update button twise
-                ///
-                RepaintBoundary(
-                  child: CustomPaint(
-                    key: _columnsPainterGlobalKey,
-                    isComplex: true,
-                    painter: _getSeriesPainter<TData>(
-                      series: widget._series as ChartSeries<TData>,
-                      animation: _seriesAnimation,
-                    ),
-                  ),
-                ),
-
-                RepaintBoundary(
-                  child: ClipPath(
-                    clipper: UpdatedColumnsClipper<TData>(
-                      series: widget._series as ColumnSeries<TData>,
-                    ),
+                  return RepaintBoundary(
                     child: CustomPaint(
-                      key: _columnsUpdatedColumnsPainterGlobalKey,
                       isComplex: true,
-                      painter: _getAxisPainter<TData>(
+                      painter: _getSeriesPainter<TData>(
                         series: widget._series as ChartSeries<TData>,
                         animation: _seriesAnimation,
-                      ),
-                      foregroundPainter: _getUpdatedSeriesPainter<TData>(
-                        series: widget._series as ChartSeries<TData>,
+                        axisBackgroundPicture: axisBackgroundPicture,
                       ),
                     ),
-                  ),
-                ),
-              ],
-            ),
+                  );
+                },
+              ),
+            ],
           ),
         ),
       ),
@@ -172,23 +145,13 @@ class _FastChartState<TData> extends State<FastChart>
   CustomPainter? _getSeriesPainter<TData>({
     required ChartSeries<TData> series,
     Animation<double>? animation,
+    ui.Picture? axisBackgroundPicture,
   }) {
     if (series is ColumnSeries<TData>) {
       return ColumnsPainter(
         series: series,
         animation: animation,
-      );
-    }
-
-    return null;
-  }
-
-  CustomPainter? _getUpdatedSeriesPainter<TData>({
-    required ChartSeries<TData> series,
-  }) {
-    if (series is ColumnSeries<TData>) {
-      return UpdatedColumnsPainter(
-        series: series,
+        axisBackgroundPicture: axisBackgroundPicture,
       );
     }
 
