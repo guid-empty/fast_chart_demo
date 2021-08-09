@@ -82,6 +82,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     _updatedItemsCache.contains(index),
               ),
               backgroundColor: Colors.blueAccent,
+              showLabels: true,
             ),
             Positioned(
               top: 0,

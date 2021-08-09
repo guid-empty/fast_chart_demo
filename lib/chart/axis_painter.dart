@@ -17,20 +17,8 @@ class AxisPainter<TData> extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    canvas
-      ..saveLayer(Rect.fromLTWH(0, 0, size.width, size.height), Paint())
-      ..drawColor(Colors.black87, BlendMode.src);
-
-    late double margin;
-
-    final maxAvailableColumnWidth = size.width / _dataSource.length;
-    if (maxAvailableColumnWidth < 8 && maxAvailableColumnWidth >= 2) {
-      margin = 1;
-    } else if (maxAvailableColumnWidth < 2) {
-      margin = 0;
-    } else {
-      margin = 10;
-    }
+    canvas.drawColor(Colors.black87, BlendMode.src);
+    final double margin = 10;
 
     final columnWidth = (size.width - (margin * _dataSource.length + margin)) /
         _dataSource.length;
@@ -60,9 +48,8 @@ class AxisPainter<TData> extends CustomPainter {
 
       yAxisOffset += yAxisMajorLinesStep;
     }
-    canvas.restore();
   }
 
   @override
-  bool shouldRepaint(AxisPainter oldDelegate) => false;
+  bool shouldRepaint(AxisPainter oldDelegate) => true;
 }

@@ -1,5 +1,4 @@
 import 'dart:ui';
-import 'dart:ui' as ui;
 
 import 'package:fast_chart/chart/chart_series_data_source.dart';
 import 'package:fast_chart/chart/column_series.dart';
@@ -12,35 +11,26 @@ class ColumnsPainter<TData> extends CustomPainter {
   final ColumnSeries<TData> _series;
   final ChartSeriesDataSource<TData> _dataSource;
   final ColumnSeriesCalculationService<TData> _columnSeriesCalculationService;
-  final ui.Picture? _axisBackgroundPicture;
 
   ColumnsPainter({
     required ColumnSeries<TData> series,
     this.animation,
-    ui.Picture? axisBackgroundPicture,
   })  : _series = series,
         _dataSource = series.dataSource,
         _columnSeriesCalculationService = ColumnSeriesCalculationService(
           series: series,
           dataSource: series.dataSource,
         ),
-        _axisBackgroundPicture = axisBackgroundPicture,
         super(
-          repaint: Listenable.merge(
-            [
-              animation,
-            ],
-          ),
-        );
+        repaint: Listenable.merge(
+          [
+            animation,
+          ],
+        ),
+      );
 
   @override
   void paint(Canvas canvas, Size size) {
-    if (_axisBackgroundPicture == null) {
-      return;
-    }
-
-    canvas.drawPicture(_axisBackgroundPicture!);
-
     final animationFactor = animation != null ? animation!.value : 1;
     late double margin;
     late double radius;
@@ -78,9 +68,10 @@ class ColumnsPainter<TData> extends CustomPainter {
             ((yAxisValue / yAxisMaxValue) * size.height - margin) *
                 animationFactor;
 
+        final top = size.height - columnHeight;
         final columnRRect = RRect.fromRectAndCorners(
           Rect.fromLTWH(
-              left, size.height - columnHeight, columnWidth, columnHeight),
+              left, top, columnWidth, columnHeight),
           bottomLeft: Radius.zero,
           bottomRight: Radius.zero,
           topLeft: Radius.circular(radius),
@@ -88,6 +79,8 @@ class ColumnsPainter<TData> extends CustomPainter {
         );
         canvas.drawRRect(columnRRect, columnFillPaint);
       }
+
+
 
       left += columnWidth + margin;
     }
