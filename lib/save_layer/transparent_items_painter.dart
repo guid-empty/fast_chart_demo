@@ -1,12 +1,24 @@
 import 'dart:math' as math;
 import 'dart:ui';
 
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' show Colors;
 import 'package:flutter/rendering.dart';
 
 class TransparentItemsPainter extends CustomPainter {
+  final Image? background;
+
+  TransparentItemsPainter({required this.background});
+
   @override
   void paint(Canvas canvas, Size size) {
+    if (background != null) {
+      canvas.drawImage(
+        background!,
+        Offset.zero,
+        Paint(),
+      );
+    }
+
     final itemsCount = 6;
     final itemsWidth = size.width / 3;
     final itemsHeight = itemsWidth;
@@ -32,7 +44,7 @@ class TransparentItemsPainter extends CustomPainter {
       canvas.drawRRect(
           RRect.fromRectAndRadius(rect, Radius.circular(24)), rectPaint);
 
-      TextSpan span = TextSpan(
+      final span = TextSpan(
         style: TextStyle(
           color: Colors.white,
           fontSize: itemsWidth / 2,
@@ -40,7 +52,7 @@ class TransparentItemsPainter extends CustomPainter {
         text: index.toString(),
       );
 
-      TextPainter tp = TextPainter(
+      final tp = TextPainter(
           text: span,
           textAlign: TextAlign.left,
           textDirection: TextDirection.ltr);

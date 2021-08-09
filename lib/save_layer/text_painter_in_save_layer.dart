@@ -7,8 +7,10 @@ import 'package:flutter/rendering.dart';
 class TextPainterInSaveLayerPainter extends CustomPainter {
   final bool useSaveLayer;
   final Image? background;
+  final int itemsCount;
 
   TextPainterInSaveLayerPainter({
+    required this.itemsCount,
     required this.useSaveLayer,
     required this.background,
   });
@@ -37,7 +39,6 @@ class TextPainterInSaveLayerPainter extends CustomPainter {
           ..color = Colors.black12
           ..strokeWidth = 2,
       );
-    final itemsCount = 2;
     final itemsWidth = size.width / 1.5;
     final itemsHeight = itemsWidth;
 
@@ -65,7 +66,7 @@ class TextPainterInSaveLayerPainter extends CustomPainter {
         rectPaint = Paint()
           ..color = index.isEven ? Colors.red : Colors.green
           ..style = PaintingStyle.fill
-          ..blendMode = BlendMode.multiply;
+          ..blendMode = BlendMode.multiply; // try to remove it
       }
 
       var positive = math.Random().nextBool();
@@ -76,15 +77,15 @@ class TextPainterInSaveLayerPainter extends CustomPainter {
       canvas.drawRRect(
           RRect.fromRectAndRadius(rect, Radius.circular(24)), rectPaint);
 
-      TextSpan span = TextSpan(
+      final span = TextSpan(
         style: TextStyle(
           color: Colors.white,
-          fontSize: itemsWidth / 2,
+          fontSize: itemsWidth / 1.2,
         ),
         text: index.toString(),
       );
 
-      TextPainter tp = TextPainter(
+      final tp = TextPainter(
           text: span,
           textAlign: TextAlign.left,
           textDirection: TextDirection.ltr);

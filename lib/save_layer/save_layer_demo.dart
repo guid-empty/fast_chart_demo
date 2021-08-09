@@ -54,12 +54,14 @@ class _MyHomePageState extends State<MyHomePage> {
               return CustomPaint(
                 //  simple demo to show save layer rules
                 painter: TextPainterInSaveLayerPainter(
+                  itemsCount: 2,
                   useSaveLayer: true,
                   background: snapshot.data!,
+                  // background: null,
                 ),
 
                 //  simple demo to show several transparent items
-                //  painter: TransparentItemsPainter(),
+                //  painter: TransparentItemsPainter(background: snapshot.data!,),
               );
             }
 
