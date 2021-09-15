@@ -4,6 +4,7 @@ import 'package:fast_chart/chart/chart_series_data_source.dart';
 import 'package:fast_chart/chart/column_series.dart';
 import 'package:fast_chart/chart/fast_chart.dart';
 import 'package:fast_chart/custom_data.dart';
+import 'package:fast_chart/save_layer/save_layer_demo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
@@ -11,7 +12,7 @@ void main() {
   debugProfilePaintsEnabled = true;
   debugProfileBuildsEnabled = true;
 
-  runApp(MyApp());
+  runApp(SaveLayerDemoApp());
 }
 
 class MyApp extends StatelessWidget {
