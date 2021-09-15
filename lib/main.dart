@@ -10,6 +10,7 @@ import 'package:flutter/rendering.dart';
 void main() {
   debugProfilePaintsEnabled = true;
   debugProfileBuildsEnabled = true;
+
   runApp(MyApp());
 }
 
@@ -59,12 +60,14 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.blue,
       appBar: AppBar(
-        backgroundColor: Colors.blueAccent,
         title: Text(widget.title),
         elevation: 0,
       ),
       body: Container(
+        color: Colors.transparent,
+        padding: const EdgeInsets.all(10.0),
         child: Stack(
           fit: StackFit.expand,
           children: [
@@ -86,12 +89,13 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             Positioned(
               top: 0,
-              left: 4,
-              right: 4,
+              left: 0,
+              right: 0,
               height: 20,
               child: Container(
-                padding: const EdgeInsets.only(left: 10),
-                color: Colors.black.withAlpha(90),
+                padding: const EdgeInsets.only(right: 10),
+                alignment: Alignment.centerRight,
+                color: Colors.black.withAlpha(70),
                 constraints: BoxConstraints(
                   maxWidth: double.infinity,
                   minWidth: double.infinity,
@@ -108,7 +112,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
             Positioned(
-              bottom: 32,
+              bottom: 0,
               left: 0,
               right: 0,
               height: 160,
@@ -137,6 +141,7 @@ class _MyHomePageState extends State<MyHomePage> {
             onPressed: () => setState(() {}),
             child: Icon(Icons.refresh_outlined),
           ),
+          SizedBox(height: 160),
         ],
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
@@ -147,7 +152,7 @@ class _MyHomePageState extends State<MyHomePage> {
       int dayInMonth = 11;
       for (int i = 0; i < 100; i++) {
         _dataSource.add(
-          _generateCustomData(dayInMonth, 60),
+          _generateCustomData(dayInMonth, 50),
         );
 
         dayInMonth++;
@@ -160,17 +165,24 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  CustomData _generateCustomData(int dayInMonth, int maxClosedPrice) {
+  CustomData _generateCustomData(
+    int dayInMonth,
+    int maxClosedPrice, [
+    bool orangeRange = true,
+  ]) {
     final closedPrice = math.Random().nextInt(maxClosedPrice);
-    final a = 255 - math.Random().nextInt(30);
-    final r = math.Random().nextInt(255);
-    final g = math.Random().nextInt(255);
-    final b = math.Random().nextInt(255);
+    final color = orangeRange
+        ? ColorTween(begin: Colors.red, end: Colors.amber).lerp(
+            math.Random().nextDouble(),
+          )
+        : Color(
+            (Colors.white.value * math.Random().nextDouble()).toInt(),
+          );
 
     return CustomData(
       dayInMonth: dayInMonth,
       closedPrice: closedPrice,
-      color: Color.fromARGB(a, r, g, b),
+      color: color!,
     );
   }
 

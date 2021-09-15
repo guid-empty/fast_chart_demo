@@ -30,7 +30,6 @@ class FastChart<TData> extends StatefulWidget {
 
 class _FastChartState<TData> extends State<FastChart>
     with SingleTickerProviderStateMixin {
-
   AnimationController? _seriesAnimationController;
   Animation<double>? _seriesAnimation;
 
@@ -64,10 +63,6 @@ class _FastChartState<TData> extends State<FastChart>
         duration: widget._series.animationDuration,
       );
 
-      // ..addListener(() {
-      //   print(_seriesAnimationController!.value);
-      // });
-
       _seriesAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
         CurvedAnimation(
           parent: _seriesAnimationController!,
@@ -93,64 +88,61 @@ class _FastChartState<TData> extends State<FastChart>
     final chartHeight = size.height - 270;
     return Container(
       color: widget.backgroundColor,
-      child: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: Center(
-          child: SizedBox.expand(
-            child: Stack(
-              fit: StackFit.expand,
-              children: [
-                Positioned(
-                  top: 0,
-                  left: 0,
-                  child: SizedBox(
-                    width: size.width,
-                    height: chartHeight,
-                    child: RepaintBoundary(
-                      child: CustomPaint(
-                        isComplex: true,
-                        painter: _getAxisPainter<TData>(
-                          series: widget._series as ChartSeries<TData>,
-                          animation: _seriesAnimation,
-                        ),
+      child: Center(
+        child: SizedBox.expand(
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              Positioned(
+                top: 0,
+                left: 0,
+                child: SizedBox(
+                  width: size.width,
+                  height: chartHeight,
+                  child: RepaintBoundary(
+                    child: CustomPaint(
+                      isComplex: true,
+                      painter: _getAxisPainter<TData>(
+                        series: widget._series as ChartSeries<TData>,
+                        animation: _seriesAnimation,
                       ),
                     ),
                   ),
                 ),
-                Positioned(
-                  top: 0,
-                  left: 0,
-                  child: SizedBox(
-                    width: size.width,
-                    height: chartHeight,
-                    child: RepaintBoundary(
-                      child: CustomPaint(
-                        isComplex: true,
-                        painter: _getSeriesPainter<TData>(
-                          series: widget._series as ChartSeries<TData>,
-                          animation: _seriesAnimation,
-                        ),
+              ),
+              Positioned(
+                top: 0,
+                left: 0,
+                child: SizedBox(
+                  width: size.width,
+                  height: chartHeight,
+                  child: RepaintBoundary(
+                    child: CustomPaint(
+                      isComplex: true,
+                      painter: _getSeriesPainter<TData>(
+                        series: widget._series as ChartSeries<TData>,
+                        animation: _seriesAnimation,
                       ),
                     ),
                   ),
                 ),
-                if (widget.showLabels)
-                  Positioned(
-                    top: 0,
-                    left: 0,
-                    child: Container(
-                      color: Colors.black,
-                      width: 30,
-                      height: chartHeight,
-                    ),
+              ),
+              if (widget.showLabels)
+                Positioned(
+                  top: 0,
+                  left: 0,
+                  child: Container(
+                    color: Colors.black,
+                    width: 30,
+                    height: chartHeight,
                   ),
-                if (widget.showLabels)
-                  ..._buildLabelsWithFix(
-                    series: widget._series as ChartSeries<TData>,
-                    maxHeight: chartHeight,
-                  ),
-              ],
-            ),
+                ),
+              if (widget.showLabels)
+                ..._buildLabels(
+                  series: widget._series as ChartSeries<TData>,
+                  maxHeight: chartHeight,
+                ),
+            ],
           ),
         ),
       ),
@@ -203,7 +195,7 @@ class _FastChartState<TData> extends State<FastChart>
           top: top,
           left: 10,
           child: SizedBox(
-            width: 14, //  try to decrease the value to 10px
+            width: 14,
             height: 20,
             child: RichText(
               textAlign: TextAlign.end,
@@ -214,7 +206,7 @@ class _FastChartState<TData> extends State<FastChart>
                 text: axisYValue.toString().padLeft(3, '0'),
                 style: DefaultTextStyle.of(context).style.copyWith(
                       color: Colors.white,
-                      fontSize: 8,
+                      fontSize: 8, //  try to increase fontSize to 10.0
                     ),
               ),
             ),
