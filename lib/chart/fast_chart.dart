@@ -49,12 +49,10 @@ class _FastChartState<TData> extends State<FastChart<TData>>
                 child: SizedBox(
                   width: size.width,
                   height: chartHeight,
-                  child: RepaintBoundary(
-                    child: CustomPaint(
-                      isComplex: true,
-                      painter: AxisPainter(
-                        series: widget._series,
-                      ),
+                  child: CustomPaint(
+                    isComplex: true,
+                    painter: AxisPainter(
+                      series: widget._series,
                     ),
                   ),
                 ),
