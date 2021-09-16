@@ -11,12 +11,14 @@ class ColumnSeries<TData> {
   final ValueMapper<TData, dynamic> xValueMapper;
   final ValueMapper<TData, num> yValueMapper;
   final ValueMapper<TData, Color> pointColorMapper;
+  final Duration? animationDuration;
 
-  ColumnSeries({
+  ColumnSeries( {
     required this.dataSource,
     required this.xValueMapper,
     required this.yValueMapper,
     required this.pointColorMapper,
+    required this.animationDuration,
     String? name,
     Color? borderColor,
     double? borderWidth,

@@ -26,11 +26,48 @@ class FastChart<TData> extends StatefulWidget {
 
 class _FastChartState<TData> extends State<FastChart<TData>>
     with SingleTickerProviderStateMixin {
+  AnimationController? _seriesAnimationController;
+  Animation<double>? _seriesAnimation;
+
   @override
   Widget build(BuildContext context) {
     return Center(
       child: renderChartElements(context),
     );
+  }
+
+  @override
+  void didUpdateWidget(FastChart<TData> oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (widget._series != oldWidget._series) {
+      if (widget._series.animationDuration != null) {
+        _seriesAnimationController!
+          ..reset()
+          ..forward();
+      }
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget._series.animationDuration != null) {
+      _seriesAnimationController = AnimationController(
+        vsync: this,
+        duration: widget._series.animationDuration,
+      );
+
+      _seriesAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+        CurvedAnimation(
+          parent: _seriesAnimationController!,
+          curve: Curves.easeInOut,
+        ),
+      );
+
+      _seriesAnimationController!.forward();
+    }
   }
 
   Widget renderChartElements(BuildContext context) {
@@ -66,6 +103,7 @@ class _FastChartState<TData> extends State<FastChart<TData>>
                   child: CustomPaint(
                     painter: ColumnsPainter<TData>(
                       series: widget._series,
+                      animation: _seriesAnimation,
                     ),
                   ),
                 ),
