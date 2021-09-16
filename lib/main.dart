@@ -4,15 +4,11 @@ import 'package:fast_chart/chart/chart_series_data_source.dart';
 import 'package:fast_chart/chart/column_series.dart';
 import 'package:fast_chart/chart/fast_chart.dart';
 import 'package:fast_chart/custom_data.dart';
-import 'package:fast_chart/save_layer/save_layer_demo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
 void main() {
-  debugProfilePaintsEnabled = true;
-  debugProfileBuildsEnabled = true;
-
-  runApp(SaveLayerDemoApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -56,8 +52,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   late ValueNotifier<int> _total = ValueNotifier<int>(_dataSource.length);
 
-  Set<int> _updatedItemsCache = <int>{};
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -74,7 +68,6 @@ class _MyHomePageState extends State<MyHomePage> {
           children: [
             FastChart<CustomData>(
               series: ColumnSeries<CustomData>(
-                animationDuration: Duration(milliseconds: 500),
                 dataSource: _dataSource,
                 xValueMapper: (CustomData data, int index) =>
                     _dataSource[index].dayInMonth,
@@ -82,11 +75,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     _dataSource[index].closedPrice,
                 pointColorMapper: (CustomData data, int index) =>
                     _dataSource[index].color,
-                isDirtyMapper: (CustomData data, index) =>
-                    _updatedItemsCache.contains(index),
               ),
-              backgroundColor: Colors.blueAccent,
-              showLabels: true,
+              backgroundColor: Colors.black,
             ),
             Positioned(
               top: 0,
@@ -127,12 +117,6 @@ class _MyHomePageState extends State<MyHomePage> {
         children: [
           SizedBox(height: 10),
           FloatingActionButton(
-            onPressed: () => _update5(),
-            tooltip: 'Update',
-            child: Icon(Icons.update_outlined),
-          ),
-          SizedBox(height: 10),
-          FloatingActionButton(
             onPressed: () => _add100(),
             tooltip: 'Increment',
             child: Icon(Icons.add),
@@ -140,6 +124,7 @@ class _MyHomePageState extends State<MyHomePage> {
           SizedBox(height: 10),
           FloatingActionButton(
             onPressed: () => setState(() {}),
+            tooltip: 'Refresh State',
             child: Icon(Icons.refresh_outlined),
           ),
           SizedBox(height: 160),
@@ -185,17 +170,5 @@ class _MyHomePageState extends State<MyHomePage> {
       closedPrice: closedPrice,
       color: color!,
     );
-  }
-
-  void _update5() {
-    var updatedIndex = 4;
-
-    _updatedItemsCache.add(updatedIndex);
-    _dataSource[updatedIndex] = _generateCustomData(updatedIndex, 50);
-
-    updatedIndex = 8;
-
-    _updatedItemsCache.add(updatedIndex);
-    _dataSource[updatedIndex] = _generateCustomData(updatedIndex, 50);
   }
 }
