@@ -1,3 +1,4 @@
+import 'package:fast_chart/chart/axis_painter.dart';
 import 'package:fast_chart/chart/column_painter.dart';
 import 'package:fast_chart/chart/column_series.dart';
 import 'package:flutter/material.dart';
@@ -42,6 +43,22 @@ class _FastChartState<TData> extends State<FastChart<TData>>
           child: Stack(
             fit: StackFit.expand,
             children: [
+              Positioned(
+                top: 0,
+                left: 0,
+                child: SizedBox(
+                  width: size.width,
+                  height: chartHeight,
+                  child: RepaintBoundary(
+                    child: CustomPaint(
+                      isComplex: true,
+                      painter: AxisPainter(
+                        series: widget._series,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
               Positioned(
                 top: 0,
                 left: 0,
