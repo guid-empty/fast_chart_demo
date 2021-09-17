@@ -118,6 +118,12 @@ class _MyHomePageState extends State<MyHomePage> {
         children: [
           SizedBox(height: 10),
           FloatingActionButton(
+            onPressed: () {},
+            tooltip: 'Do Nothing',
+            child: Text('N'),
+          ),
+          SizedBox(height: 10),
+          FloatingActionButton(
             onPressed: () => _add100(),
             tooltip: 'Increment',
             child: Icon(Icons.add),
