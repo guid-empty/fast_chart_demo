@@ -48,13 +48,12 @@ class ColumnsPainter<TData> extends CustomPainter {
         _dataSource.length;
     double left = margin;
 
+    final yAxisMaxValue = _getMaxYAxisValue();
     for (var i = 0; i < _dataSource.length; i++) {
       final TData data = _dataSource[i];
       Paint columnFillPaint = Paint()
         ..color = _series.pointColorMapper(data, i)
         ..style = PaintingStyle.fill;
-
-      final yAxisMaxValue = _getMaxYAxisValue();        ///  ! O(N^2)
 
       final yAxisValue = _series.yValueMapper(data, i);
       final columnHeight =
