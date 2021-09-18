@@ -73,42 +73,44 @@ class _FastChartState<TData> extends State<FastChart<TData>>
   Widget renderChartElements(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final chartHeight = size.height - 270;
-    return Container(
-      color: widget.backgroundColor,
-      child: Center(
-        child: SizedBox.expand(
-          child: Stack(
-            fit: StackFit.expand,
-            children: [
-              Positioned(
-                top: 0,
-                left: 0,
-                child: SizedBox(
-                  width: size.width,
-                  height: chartHeight,
-                  child: CustomPaint(
-                    isComplex: true,
-                    painter: AxisPainter(
-                      series: widget._series,
+    return RepaintBoundary(
+      child: Container(
+        color: widget.backgroundColor,
+        child: Center(
+          child: SizedBox.expand(
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                Positioned(
+                  top: 0,
+                  left: 0,
+                  child: SizedBox(
+                    width: size.width,
+                    height: chartHeight,
+                    child: CustomPaint(
+                      isComplex: true,
+                      painter: AxisPainter(
+                        series: widget._series,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              Positioned(
-                top: 0,
-                left: 0,
-                child: SizedBox(
-                  width: size.width,
-                  height: chartHeight,
-                  child: CustomPaint(
-                    painter: ColumnsPainter<TData>(
-                      series: widget._series,
-                      animation: _seriesAnimation,
+                Positioned(
+                  top: 0,
+                  left: 0,
+                  child: SizedBox(
+                    width: size.width,
+                    height: chartHeight,
+                    child: CustomPaint(
+                      painter: ColumnsPainter<TData>(
+                        series: widget._series,
+                        animation: _seriesAnimation,
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
