@@ -118,10 +118,8 @@ class _MyHomePageState extends State<MyHomePage> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           SizedBox(height: 10),
-          FloatingActionButton(
-            onPressed: () {},
-            tooltip: 'Do Nothing',
-            child: Text('N'),
+          CircularProgressIndicator(
+            color: Colors.white,
           ),
           SizedBox(height: 10),
           FloatingActionButton(
