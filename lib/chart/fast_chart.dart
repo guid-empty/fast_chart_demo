@@ -87,21 +87,10 @@ class _FastChartState<TData> extends State<FastChart<TData>>
                   width: size.width,
                   height: chartHeight,
                   child: CustomPaint(
-                    isComplex: true,
                     painter: AxisPainter(
                       series: widget._series,
                     ),
-                  ),
-                ),
-              ),
-              Positioned(
-                top: 0,
-                left: 0,
-                child: SizedBox(
-                  width: size.width,
-                  height: chartHeight,
-                  child: CustomPaint(
-                    painter: ColumnsPainter<TData>(
+                    foregroundPainter: ColumnsPainter<TData>(
                       series: widget._series,
                       animation: _seriesAnimation,
                     ),
