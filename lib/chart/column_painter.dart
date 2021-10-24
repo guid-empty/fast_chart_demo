@@ -54,7 +54,7 @@ class ColumnsPainter<TData> extends CustomPainter {
         ..color = _series.pointColorMapper(data, i)
         ..style = PaintingStyle.fill;
 
-      final yAxisMaxValue = _getMaxYAxisValue();        ///  ! O(N^2)
+      final yAxisMaxValue = _getMaxYAxisValue();
 
       final yAxisValue = _series.yValueMapper(data, i);
       final columnHeight =
