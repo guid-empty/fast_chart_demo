@@ -1,3 +1,4 @@
+import 'dart:developer' as developer;
 import 'dart:math' as math;
 import 'dart:ui';
 
@@ -26,6 +27,8 @@ class ColumnsPainter<TData> extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    developer.Timeline.startSync('columns painting');
+
     print('!!!! It\'s Columns Painter Logic ');
 
     final animationFactor = animation != null ? animation!.value : 1;
@@ -73,6 +76,7 @@ class ColumnsPainter<TData> extends CustomPainter {
 
       left += columnWidth + margin;
     }
+    developer.Timeline.finishSync();
   }
 
   @override
